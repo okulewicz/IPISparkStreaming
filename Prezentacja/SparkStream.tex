@@ -1,0 +1,127 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{media9}
+\usepackage{float}
+\usepackage[verbose]{wrapfig}
+\usepackage{textcomp}
+
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+
+\mode<presentation>
+{
+  \usetheme{Warsaw}
+  \useinnertheme{circles}
+  \usecolortheme{crane}
+
+  \setbeamercovered{transparent}
+  \beamertemplatenavigationsymbolsempty
+  \useoutertheme{infolines}
+}
+
+\title[Spark Streaming] % (optional, use only with long paper titles)
+{Spark Streaming}
+
+\author %[Author, Another] % (optional, use only with lots of authors)
+{Mateusz, Kope{\'c}, Micha{\l} Okulewicz}
+
+\institute %[Universities of Somewhere and Elsewhere] % (optional, but mostly needed)
+{
+Institute of Computer Science\\
+Polish Academy of Sciences}
+
+\date %[ ] % (optional, should be abbreviation of conference name)
+{Big Data \\27 November 2014}
+
+\subject{Real-time distributed computing}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+  \frametitle{Presentation Plan}
+  \tableofcontents
+  % You might wish to add the option [pausesections]
+\end{frame}
+
+\section{Introduction}
+
+\subsection*{Apache Spark\texttrademark}
+\begin{frame}
+\frametitle{What is Apache Spark\texttrademark?}
+
+\begin{block}{Apache Spark\texttrademark}
+\begin{itemize}
+	\item distributed computations system
+	\item not only MapReduce applications
+	\item supports in-memory operations
+	\item may use HDFS
+\end{itemize}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{What is Spark Streaming?}
+
+\begin{block}{Spark Streaming}
+\begin{itemize}
+	\item subproject of Apache Spark\texttrademark
+	\item allows for real-time distributed stream processing
+\end{itemize}
+
+\end{block}
+
+\end{frame}
+
+
+\subsection*{Real-time computing}
+\begin{frame}
+\frametitle{Real-time computing}
+	\begin{itemize}
+		\item Fraud detection
+		\item Volcano eruptions / earthquakes detection
+	\end{itemize}
+\end{frame}
+
+\section{Spark architecture}
+\begin{frame}
+\frametitle{Spark architecture}
+\end{frame}
+
+\section{Example stream processing task}
+\begin{frame}
+\frametitle{Example stream processing task}
+\end{frame}
+
+\section{How to run Spark Streaming?}
+\begin{frame}
+\frametitle{How to run Spark?}
+\begin{block}{Spark Streaming}
+	\begin{itemize}
+		\item Get precompiled Spark 1.1.0 for Hadoop 1.x from \texttt{/home/2012/m.okulewicz/spark} and unpack it
+		\item If necessary edit: \texttt{conf/spark-env.sh} and add location of~\texttt{JAVA\_HOME}
+		\item Run \texttt{sbin/start-slave.sh 1 spark://phd03.phd.ipipan.waw.pl}
+		\item Check in browser if \texttt{http://localhost:8081} is available and master points to \texttt{phd03.phd.ipipan.waw.pl}
+	\end{itemize}
+	\end{block}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+	\frametitle<presentation>{Bibliography}
+	\nocite{*}
+	\bibliographystyle{plain}
+	\tiny
+	\bibliography{SparkStream}
+\end{frame}
+
+\end{document}
+
+
