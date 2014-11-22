@@ -1,0 +1,10 @@
+1. start master by
+./sbin/start-master.sh
+
+2. start worker(s) by
+./bin/spark-class org.apache.spark.deploy.worker.Worker spark://workstation:7077
+
+3. start job by
+./bin/spark-submit --master spark://workstation:7077 --class example.Example ../workspace/spark/target/example-0.0.1-SNAPSHOT-jar-with-dependencies.jar localhost 9999
+or
+./bin/spark-submit --master spark://workstation:7077 --class example.ExampleTwitter ../workspace/spark/target/example-0.0.1-SNAPSHOT-jar-with-dependencies.jar
