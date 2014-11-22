@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -29,7 +28,7 @@ public final class SocketReceiver {
 
 	private static final Logger LOG = Logger.getLogger(SocketReceiver.class);
 
-	private static final String CHECKPOINTS_DIR = ".";
+	private static final String CHECKPOINTS_DIR = "checkpoints";
 	private static final Pattern SEPARATOR = Pattern.compile("[\n ]", Pattern.MULTILINE);
 
 	@SuppressWarnings("serial")
@@ -67,16 +66,23 @@ public final class SocketReceiver {
 			}
 		});
 
-		// filter empty words and parse others into Long
+		// filter empty and not long words and parse others into Long
 		JavaDStream<Long> numbers = words.filter(new Function<String, Boolean>() {
 			@Override
 			public Boolean call(String x) throws Exception {
-				return !StringUtils.isBlank(x);
+				try {
+					Long.valueOf(x);
+				} catch (NumberFormatException ex) {
+					LOG.error("Unable to parse number: " + ex);
+					return false;
+				}
+				return true;
 			}
 		}).map(new Function<String, Long>() {
 			@Override
 			public Long call(String x) throws Exception {
-				return Long.valueOf(transform(x, wordSleepMilis));
+				sleep(wordSleepMilis);
+				return Long.valueOf(x);
 			}
 		});
 
@@ -92,15 +98,16 @@ public final class SocketReceiver {
 
 		// create a stream of states, each containing a set of distinct longs
 		// seen up to date
-		JavaPairDStream<String, Set<Long>> mergedSets = setsStream.updateStateByKey(new Function2<List<Set<Long>>, Optional<Set<Long>>, Optional<Set<Long>>>() {
-			@Override
-			public Optional<Set<Long>> call(List<Set<Long>> values, Optional<Set<Long>> state) {
-				Set<Long> result = state.or(new HashSet<Long>());
-				for (Set<Long> set : values)
-					result.addAll(set);
-				return Optional.of(result);
-			}
-		});
+		JavaPairDStream<String, Set<Long>> mergedSets = setsStream
+				.updateStateByKey(new Function2<List<Set<Long>>, Optional<Set<Long>>, Optional<Set<Long>>>() {
+					@Override
+					public Optional<Set<Long>> call(List<Set<Long>> values, Optional<Set<Long>> state) {
+						Set<Long> result = state.or(new HashSet<Long>());
+						for (Set<Long> set : values)
+							result.addAll(set);
+						return Optional.of(result);
+					}
+				});
 
 		// we need to manually set long time for checkpoint, as it won't work
 		mergedSets.checkpoint(CHECKPOINT_INTERVAL);
@@ -124,12 +131,11 @@ public final class SocketReceiver {
 		ssc.awaitTermination();
 	}
 
-	private static String transform(String s, int wordSleepMilis) {
+	private static void sleep(int wordSleepMilis) {
 		try {
 			Thread.sleep(wordSleepMilis);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return s;
 	}
 }
