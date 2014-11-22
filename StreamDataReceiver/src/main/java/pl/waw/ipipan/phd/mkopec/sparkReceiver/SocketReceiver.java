@@ -25,16 +25,16 @@ import com.google.common.collect.Lists;
 
 public final class SocketReceiver {
 	private static final Duration CHECKPOINT_INTERVAL = new Duration(1000 * 60 * 60 * 24);
+	private static final String CHECKPOINTS_DIR = "checkpoints";
+	private static final Pattern SEPARATOR = Pattern.compile("[\n ]+", Pattern.MULTILINE);
 
 	private static final Logger LOG = Logger.getLogger(SocketReceiver.class);
-
-	private static final String CHECKPOINTS_DIR = "checkpoints";
-	private static final Pattern SEPARATOR = Pattern.compile("[\n ]", Pattern.MULTILINE);
 
 	@SuppressWarnings("serial")
 	public static void main(String[] args) {
 		if (args.length < 4) {
-			LOG.error("Usage: JavaNetworkWordCount <hostname> <port> <batch_time_milis> <per_number_sleep_time_milis>");
+			LOG.error("Usage: " + SocketReceiver.class.getSimpleName()
+					+ " <hostname> <port> <batch_time_milis> <per_number_sleep_time_milis>");
 			return;
 		}
 
@@ -109,23 +109,26 @@ public final class SocketReceiver {
 					}
 				});
 
-		// we need to manually set long time for checkpoint, as it won't work
-		mergedSets.checkpoint(CHECKPOINT_INTERVAL);
-
 		// print state for each rdd
 		mergedSets.foreachRDD(new Function<JavaPairRDD<String, Set<Long>>, Void>() {
 			@Override
 			public Void call(JavaPairRDD<String, Set<Long>> rdd) throws Exception {
 				if (rdd.count() != 1) {
-					System.out.println("######### Empty RDD ###########");
+					System.out.println("############## Empty RDD");
 					return null;
 				}
 				List<Tuple2<String, Set<Long>>> collect = rdd.collect();
 				Set<Long> set = collect.get(0)._2;
-				System.out.println("######### Distinct numbers up to date: " + set.size() + " ###########");
+				System.out.println("############## Distinct numbers up to date: " + set.size());
 				return null;
 			}
 		});
+
+		// we need to manually set long time for checkpoint, as it won't work
+		words.checkpoint(CHECKPOINT_INTERVAL);
+		numbers.checkpoint(CHECKPOINT_INTERVAL);
+		setsStream.checkpoint(CHECKPOINT_INTERVAL);
+		mergedSets.checkpoint(CHECKPOINT_INTERVAL);
 
 		ssc.start();
 		ssc.awaitTermination();
