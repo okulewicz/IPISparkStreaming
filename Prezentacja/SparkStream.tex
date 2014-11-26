@@ -7,6 +7,7 @@
 \usepackage{float}
 \usepackage[verbose]{wrapfig}
 \usepackage{textcomp}
+\usepackage{color}
 
 \newcommand{\argmax}{\operatornamewithlimits{argmax}}
 
@@ -59,13 +60,33 @@ Polish Academy of Sciences}
 \begin{itemize}
 	\item distributed computations system
 	\item not only MapReduce applications
-	\item supports in-memory operations
+	\item supports in-memory operations (Resilient Distributed Dataset)
 	\item may use HDFS
 \end{itemize}
+\end{block}
 
+\begin{block}{APIs}
+\begin{itemize}
+	\item Scala
+	\item Java
+	\item python
+\end{itemize}
 \end{block}
 
 \end{frame}
+
+\section{Spark architecture}
+\begin{frame}
+\frametitle{Spark architecture}
+\begin{center}
+\includegraphics[height=0.4\textheight]{img/SparkHadoop.png}
+\vspace{1em}
+\includegraphics[height=0.4\textheight]{img/spark-on-hadoop.png}
+
+\end{center}
+
+\end{frame}
+
 
 \begin{frame}
 \frametitle{What is Spark Streaming?}
@@ -76,35 +97,41 @@ Polish Academy of Sciences}
 	\item allows for real-time distributed stream processing
 	\item utilizes an idea called Discretized Stream (DStream)
 \end{itemize}
+\vspace{-1em}
+\includegraphics[width=\textwidth]{img/streaming-flow.png}
+\vspace{-1em}
+\includegraphics[width=\textwidth]{img/streaming-dstream.png}
 
 \end{block}
-
 \end{frame}
-
 
 \subsection*{Real-time computing}
 \begin{frame}
-\frametitle{Real-time computing}
+\frametitle{Why do we want Spark Streaming?}
 	\begin{itemize}
 		\item Fraud detection
-		\item Volcano eruptions / earthquakes detection
+		\item Financial market analysis
+		\item On-line surveillance
+		\item Early earthquakes detection
+		\item \ldots
 	\end{itemize}
-\end{frame}
-
-\section{Spark architecture}
-\begin{frame}
-\frametitle{Spark architecture}
 \end{frame}
 
 \section{Example stream processing task}
 \begin{frame}
 \frametitle{Example stream processing task}
+\begin{block}{Data producer}
+	Generate another number every 100ms
+\end{block}
+\begin{block}{Data analyzer}
+	Count all distinct numbers
+\end{block}
 \end{frame}
 
-\section{How to run Spark Streaming?}
-\begin{frame}
+\section{How to run Spark?}
+\begin{frame}[allowframebreaks]
 \frametitle{How to run Spark?}
-\begin{block}{Spark Streaming}
+\begin{block}{Running worker on Linux}
 	\begin{itemize}
 		\item Get precompiled Spark 1.1.0 for Hadoop 1.x from \texttt{/home/2012/m.okulewicz/spark} and unpack it
 		\item If necessary edit: \texttt{conf/spark-env.sh} and add location of~\texttt{JAVA\_HOME}
@@ -112,6 +139,19 @@ Polish Academy of Sciences}
 		\item Check in browser if \texttt{http://localhost:8081} is available and master points to \texttt{phd03.phd.ipipan.waw.pl}
 	\end{itemize}
 	\end{block}
+	\begin{block}{Running master and task on Linux}
+	\begin{itemize}
+		\item Run \texttt{sbin/start-master.sh}
+		\item Check in browser if \texttt{http://localhost:8080} is available
+		\item \color{red}TO BE CHANGED Run \texttt{bin/spark-submit \\
+  --class org.apache.spark.examples.SparkPi \\
+  --master spark://207.184.161.138:7077 \\
+  --executor-memory 20G \\
+  --total-executor-cores 100 \\
+  /path/to/examples.jar 1000}
+	\end{itemize}
+	\end{block}
+
 \end{frame}
 
 \begin{frame}[allowframebreaks]
