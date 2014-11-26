@@ -103,13 +103,36 @@ Polish Academy of Sciences}
 \subsection*{Real-time computing}
 \begin{frame}
 \frametitle{Why do we want Spark Streaming?}
-	\begin{itemize}
-		\item Fraud detection
-		\item Financial market analysis
-		\item On-line surveillance
-		\item Early earthquakes detection
-		\item \ldots
-	\end{itemize}
+
+\begin{columns}
+\begin{column}{0.49\textwidth}
+Many applications require fast processing of lots of live data, for example:
+\begin{itemize}
+	\item Fraud detection
+	\item Financial market analysis
+	\item On-line surveillance
+	\item Early earthquakes detection
+\end{itemize}
+\end{column}
+\begin{column}{0.49\textwidth}
+We need a system, which:
+\begin{itemize}
+	\item Scales to hundreds of nodes
+	\item Achieves second-scale latencies
+	\item Recovers from node failures
+	\item Integrates batch and online processing
+\end{itemize}
+\end{column}
+\end{columns}
+\pause
+\begin{block}{State of the art}
+In 2012, existing frameworks couldn't do both:
+\begin{itemize}
+	\item low-latency stream processing (ex. Storm)
+	\item high latency batch processing (ex. Hadoop)
+\end{itemize}
+\end{block}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -121,13 +144,23 @@ Polish Academy of Sciences}
 	\item subproject of Apache Spark\texttrademark
 	\item allows for real-time distributed stream processing
 	\item utilizes an idea called Discretized Stream (DStream)
+	\item no python API, only Java and Scala
 \end{itemize}
 \vspace{-1em}
 \includegraphics[width=\textwidth]{img/streaming-flow.png}
 \vspace{-1em}
 \includegraphics[width=\textwidth]{img/streaming-dstream.png}
-
+\vspace{-1em}
 \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{What is Spark Streaming?}
+
+\includegraphics[width=\textwidth]{img/streaming-dstream-ops.png}
+\vspace{-2em}
+\includegraphics[width=\textwidth]{img/streaming-dstream-window.png}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
