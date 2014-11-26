@@ -14,8 +14,8 @@ class SocketWriter implements Runnable {
 		// TODO Auto-generated method stub
 		while (true) {
 			byte[] data = DataGenerator.getData();
-			for (int i = 0; i < data.length; ++i)
-				System.out.print((char)data[i]);
+//			for (int i = 0; i < data.length; ++i)
+//				System.out.print((char)data[i]);
 			try {
 				socket.getOutputStream().write(data);
 				// socket.close();

@@ -26,7 +26,7 @@ public class DataGenerator implements Runnable {
 	public void run() {
 		while (true) {
 			synchronized (lockObj) {
-				if (numbers.size() > size)
+				if (numbers.size() >= size)
 					numbers.remove(0);
 				numbers.add(Long.toString(number));
 				if (start)
