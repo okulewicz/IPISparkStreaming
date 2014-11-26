@@ -12,5 +12,5 @@ export JAR=~/workspace/IPISparkStreaming/StreamDataReceiver/target/dataReceiver-
 or
 ./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 9999 1000
 or
-./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 9999 1 phd
-./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 9999 1 polska,poland
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 1000 1 phd
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 1000 1 polska,poland
