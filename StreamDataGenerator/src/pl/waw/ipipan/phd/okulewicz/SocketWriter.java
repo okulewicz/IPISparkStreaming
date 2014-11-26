@@ -17,7 +17,6 @@ class SocketWriter implements Runnable {
 			byte[] data = DataGenerator.getData();
 			for (int i = 0; i < data.length; ++i)
 				System.out.print((char)data[i]);
-			System.out.println();
 			try {
 				socket.getOutputStream().write(data);
 				// socket.close();

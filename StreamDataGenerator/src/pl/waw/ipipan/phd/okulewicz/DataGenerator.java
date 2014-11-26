@@ -1,26 +1,34 @@
 package pl.waw.ipipan.phd.okulewicz;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class DataGenerator implements Runnable {
 
-	public static long number = 0; 
+	public static long number = 0;
+	public static ArrayList<String> numbers = new ArrayList<String>();
+	public static boolean start = false;
 	final public static Object lockObj = new Object();
 	static Random random = new Random();
 	
 	public static byte[] getData() {
-		long number = 0;
+		String numbers = null;
 		synchronized(lockObj) {
-			number = DataGenerator.number;
+			start = true;
+			numbers = String.join("\n", DataGenerator.numbers);
 		}
-		return (Long.toString(number) + "\n").getBytes();
+		return (numbers + "\n").getBytes();
 	}
 
 	@Override
 	public void run() {
 		while (true) {
 			synchronized (lockObj) {
-				++number;
+				if (numbers.size() > 20000)
+					numbers.remove(0);
+				numbers.add(Long.toString(number));
+				if (start)
+					++number;
 			}
 			try {
 				Thread.sleep(100);
