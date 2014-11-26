@@ -22,6 +22,13 @@
   \useoutertheme{infolines}
 }
 
+\usepackage{listings}
+\lstset{language=Java,
+                basicstyle=\footnotesize\ttfamily,
+                keywordstyle=\footnotesize\color{blue}\ttfamily,
+}
+
+
 \title[Spark Streaming] % (optional, use only with long paper titles)
 {Spark Streaming}
 
@@ -126,14 +133,65 @@ Polish Academy of Sciences}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Example 1: Stream processing task}
-\begin{frame}
-\frametitle{Example stream processing task}
+
+\begin{frame}[allowframebreaks]
+\frametitle{First example}
 \begin{block}{Data producer}
 	Generates next integer every 100ms
 \end{block}
 \begin{block}{Data analyser}
 	Counts all distinct numbers
 \end{block}
+\end{frame}
+
+\begin{frame}[allowframebreaks,fragile]
+\frametitle{Data analyser code}
+\begin{block}{Init spark stream}
+\begin{lstlisting}
+SparkConf sparkConf = new SparkConf().setAppName("Socket");
+
+JavaStreamingContext ssc = 
+    new JavaStreamingContext(sparkConf, new Duration(1000));
+    
+JavaReceiverInputDStream<String> lines = 
+    ssc.socketTextStream(host, port));
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Transform stream}
+\begin{lstlisting}
+JavaDStream<String> words = lines
+    .flatMap(line -> Lists.newArrayList(" ".split(line)))
+    .map(word -> Long.valueOf(word))
+    .mapToPair(number -> {
+        Set<Long> set = new HashSet<>();
+        set.add(number);
+        return new Tuple2<String,Set<Long>>("distinct", set);
+    })
+    .updateStateByKey((values, state) -> {
+        Set<Long> result = state.or(new HashSet<Long>());
+        for (Set<Long> set : values)
+            result.addAll(set);
+        return Optional.of(result);
+    });
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Print stream}
+\begin{lstlisting}
+stream.foreachRDD(rdd -> {
+    if (rdd.count() != 1) {
+        System.out.println("Empty RDD");
+        return null;
+    }
+    List<Tuple2<String, Set<Long>>> collect = rdd.collect();
+    Set<Long> set = collect.get(0)._2;
+    System.out.println("Distinct: " + set.size());
+    return null;
+});
+\end{lstlisting}
+\end{block}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -184,8 +242,63 @@ Polish Academy of Sciences}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[allowframebreaks]
-\frametitle{How to run Spark?}
+\begin{frame}[allowframebreaks,fragile]
+\frametitle{Data analyser code}
+\begin{block}{Init spark stream}
+\begin{lstlisting}
+SparkConf sparkConf = new SparkConf().setAppName("Twitter");
+
+JavaStreamingContext ssc = 
+    new JavaStreamingContext(sparkConf, new Duration(1000));
+    
+JavaReceiverInputDStream<String> lines = 
+   TwitterUtils.createStream(ssc, 
+       new Array[] {"Polska", "Poland"});
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Transform stream}
+\begin{lstlisting}
+JavaPairDStream<String, Long> counts = twitterStream
+    .flatMap(tweet -> Arrays.asList(" ".split(tweet.getText())))
+    .filter(word -> {
+         sleep(1000);
+         return !StringUtils.isBlank(word);
+    })
+    .mapToPair(word -> new Tuple2<String, Long>(word, 1L))
+    .reduceByKey((x, y) -> x + y)
+    .updateStateByKey((values, state) -> {
+         Long total = state.or(0L);
+         for (Long v : values)
+             total += v;
+         return Optional.of(total);
+    });
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Print stream}
+\begin{lstlisting}
+stream.foreachRDD(rdd -> {
+    if (rdd.count() == 0) {
+        System.out.println("Empty RDD");
+        return null;
+    }
+    List<Tuple2<String, Long>> list = rdd.collect();
+    Collections.sort(list, ...);
+    
+    System.out.println(" Top 10 words");
+    for (Tuple2<String, Long> tuple : 
+        list.subList(0, Math.min(list.size(), 10)))
+        System.out.println(tuple._1 + "\t" + tuple._2);
+    return null;
+});
+\end{lstlisting}
+\end{block}
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{How to run this task?}
 
 \begin{block}{Running task on Linux}
 	\begin{itemize}
@@ -195,11 +308,13 @@ Polish Academy of Sciences}
   --master spark://phd01.phd.ipipan.waw.pl:7077 \\
   --executor-memory 20G \\
   --total-executor-cores 100 \\
-  /path/to/jar.jar localhost 1000 1 polska,poland}
+  /path/to/jar.jar localhost 1000 1 Polska,Poland}
 	\end{itemize}
 \end{block}
 
 \end{frame}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,16 @@
+export MASTER=spark://`hostname`:7077
+export JAR=~/workspace/IPISparkStreaming/StreamDataReceiver/target/dataReceiver-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+
+# 1. start master by
+./sbin/start-master.sh
+
+# 2. start worker(s) by
+./bin/spark-class org.apache.spark.deploy.worker.Worker $MASTER
+
+# 3. start job by
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.SocketReceiver $JAR localhost 9999 1000 1
+or
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 9999 1000
+or
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 1000 1 phd
+./bin/spark-submit --master $MASTER --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver $JAR 1000 1 polska,poland
