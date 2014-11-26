@@ -3,8 +3,6 @@ package pl.waw.ipipan.phd.okulewicz;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Random;
 
 public class StreamDataGenerator {
 
@@ -12,8 +10,20 @@ public class StreamDataGenerator {
 	static ServerSocket listenSocket;
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
+		if (args.length < 2) {
+			System.out.println("Usage: " + StreamDataGenerator.class.getSimpleName()
+					+ " <size> <sleep_time_milis>");
+			return;
+		}
+
+		try {
+			DataGenerator.size = Long.parseLong(args[0]);
+			DataGenerator.sleep = Long.parseLong(args[1]);
+		} catch (NumberFormatException ex) {
+			System.err.println("Error parsing program arguments: " + ex);
+			return;
+		}
+
 		Runtime.getRuntime().addShutdownHook(new Thread()
         {
             @Override

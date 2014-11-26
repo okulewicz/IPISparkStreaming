@@ -5,6 +5,8 @@ import java.util.Random;
 
 public class DataGenerator implements Runnable {
 
+	public static long size;
+	public static long sleep;
 	public static long number = 0;
 	public static ArrayList<String> numbers = new ArrayList<String>();
 	public static boolean start = false;
@@ -24,14 +26,14 @@ public class DataGenerator implements Runnable {
 	public void run() {
 		while (true) {
 			synchronized (lockObj) {
-				if (numbers.size() > 20000)
+				if (numbers.size() > size)
 					numbers.remove(0);
 				numbers.add(Long.toString(number));
 				if (start)
 					++number;
 			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

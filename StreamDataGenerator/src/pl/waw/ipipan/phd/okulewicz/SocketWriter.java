@@ -2,7 +2,6 @@ package pl.waw.ipipan.phd.okulewicz;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Random;
 
 class SocketWriter implements Runnable {
