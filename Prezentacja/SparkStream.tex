@@ -242,8 +242,8 @@ stream.foreachRDD(rdd -> {
 	\begin{itemize}
 		\item Get precompiled Spark 1.1.0 for Hadoop 1.x from \texttt{/home/2012/m.okulewicz/spark} and unpack it
 		\item If necessary edit: \texttt{conf/spark-env.sh} and add location of~\texttt{JAVA\_HOME}
-		\item Run \texttt{sbin/start-slave.sh 1 spark://phd01.phd.ipipan.waw.pl}
-		\item Check in browser if \texttt{http://localhost:8081} is available and master points to \texttt{phd01.phd.ipipan.waw.pl}
+		\item Run \texttt{sbin/start-slave.sh 1 spark://phd22.phd.ipipan.waw.pl}
+		\item Check in browser if \texttt{http://localhost:8081} is available and master points to \texttt{phd22.phd.ipipan.waw.pl}
 	\end{itemize}
 \end{block}
 	
@@ -252,7 +252,7 @@ stream.foreachRDD(rdd -> {
 		\item Run: \\
 		\texttt{./bin/spark-submit \\
   --class pl.waw.ipipan.phd.mkopec.sparkReceiver.SocketReceiver \\
-  --master spark://phd01.phd.ipipan.waw.pl:7077 \\
+  --master spark://phd22.phd.ipipan.waw.pl:7077 \\
   --executor-memory 20G \\
   --total-executor-cores 100 \\
   /path/to/jar.jar localhost 9999 1000 1}
@@ -338,7 +338,7 @@ stream.foreachRDD(rdd -> {
 		\item Run: \\
 		\texttt{./bin/spark-submit \\
   --class pl.waw.ipipan.phd.mkopec.sparkReceiver.TwitterReceiver \\
-  --master spark://phd01.phd.ipipan.waw.pl:7077 \\
+  --master spark://phd22.phd.ipipan.waw.pl:7077 \\
   --executor-memory 20G \\
   --total-executor-cores 100 \\
   /path/to/jar.jar localhost 1000 1 Polska,Poland}
