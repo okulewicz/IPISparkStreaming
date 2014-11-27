@@ -10,15 +10,16 @@ public class StreamDataGenerator {
 	static ServerSocket listenSocket;
 	
 	public static void main(String[] args) {
-		if (args.length < 2) {
+		if (args.length < 3) {
 			System.out.println("Usage: " + StreamDataGenerator.class.getSimpleName()
-					+ " <size> <sleep_time_milis>");
+					+ " <size> <sleep_time_milis> <stream_sleep_milis>");
 			return;
 		}
 
 		try {
 			DataGenerator.size = Long.parseLong(args[0]);
 			DataGenerator.sleep = Long.parseLong(args[1]);
+			SocketWriter.sleep = Long.parseLong(args[2]);
 		} catch (NumberFormatException ex) {
 			System.err.println("Error parsing program arguments: " + ex);
 			return;

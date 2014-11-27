@@ -3,6 +3,7 @@ package pl.waw.ipipan.phd.mkopec.sparkReceiver;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -114,12 +115,13 @@ public final class SocketReceiver {
 			@Override
 			public Void call(JavaPairRDD<String, Set<Long>> rdd) throws Exception {
 				if (rdd.count() != 1) {
-					System.out.println("############## Empty RDD");
+					System.out.println("\n############## Empty RDD");
 					return null;
 				}
 				List<Tuple2<String, Set<Long>>> collect = rdd.collect();
 				Set<Long> set = collect.get(0)._2;
-				System.out.println("############## Distinct numbers up to date: " + set.size());
+				System.out.println("\n############## Distinct numbers up to date: " + set.size());
+				System.out.println("############## Numbers up to date: " + new TreeSet<Long>(set));
 				return null;
 			}
 		});

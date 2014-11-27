@@ -12,12 +12,13 @@ public class DataGenerator implements Runnable {
 	public static boolean start = false;
 	final public static Object lockObj = new Object();
 	static Random random = new Random();
-	
+
 	public static byte[] getData() {
-		String numbers = null;
-		synchronized(lockObj) {
+		String numbers = "";
+		synchronized (lockObj) {
 			start = true;
-			numbers = String.join("\n", DataGenerator.numbers);
+			for (String n : DataGenerator.numbers)
+				numbers += n + "\n";
 		}
 		return (numbers + "\n").getBytes();
 	}
@@ -39,7 +40,7 @@ public class DataGenerator implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 }
